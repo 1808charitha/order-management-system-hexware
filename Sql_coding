@@ -1,0 +1,61 @@
+*** SQL Coding ***
+
+create database ordermanagementsystem;
+use ordermanagementsystem;
+
+-- Table for users
+CREATE TABLE Users (
+    userId INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(100) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    role VARCHAR(20) CHECK (role IN ('Admin', 'User')) NOT NULL
+);
+
+-- Base Product table (superclass)
+CREATE TABLE Products (
+    productId INT PRIMARY KEY AUTO_INCREMENT,
+    productName VARCHAR(100) NOT NULL,
+    description TEXT,
+    price DOUBLE NOT NULL,
+    quantityInStock INT NOT NULL,
+    type VARCHAR(50) CHECK (type IN ('Electronics', 'Clothing')) NOT NULL
+);
+
+-- Subclass table for Electronics (one-to-one with Products)
+CREATE TABLE Electronics (
+    productId INT PRIMARY KEY,
+    brand VARCHAR(100),
+    warrantyPeriod INT,
+    FOREIGN KEY (productId) REFERENCES Products(productId) ON DELETE CASCADE
+);
+
+-- Subclass table for Clothing (one-to-one with Products)
+CREATE TABLE Clothing (
+    productId INT PRIMARY KEY,
+    size VARCHAR(10),
+    color VARCHAR(50),
+    FOREIGN KEY (productId) REFERENCES Products(productId) ON DELETE CASCADE
+);
+
+-- Orders table
+CREATE TABLE Orders (
+    orderId INT PRIMARY KEY AUTO_INCREMENT,
+    userId INT,
+    orderDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userId) REFERENCES Users(userId) ON DELETE CASCADE
+);
+
+-- Join table for Order-Product relationship (many-to-many)
+CREATE TABLE OrderProducts (
+    orderId INT,
+    productId INT,
+    quantity INT DEFAULT 1,
+    PRIMARY KEY (orderId, productId),
+    FOREIGN KEY (orderId) REFERENCES Orders(orderId) ON DELETE CASCADE,
+    FOREIGN KEY (productId) REFERENCES Products(productId) ON DELETE CASCADE
+);
+
+select * from users;
+select * from orders;
+select * from products;
+show tables;
